@@ -13,7 +13,7 @@ exports.iframeinsertReceiveMessage = function(event)
       case 'insertTagsLn':
         // data has tagOpen, tagClose, sampleText
         // put tagOpen before and tagClose after each line of selection. if selection is empty, use sampleText in between.
-        var rep = self.editorInfo.ace_getRep();
+        var rep = self.rep;
         var selStart = rep.selStart;
         var selEnd = rep.selEnd;
         var text = data.sampleText;
@@ -30,13 +30,13 @@ exports.iframeinsertReceiveMessage = function(event)
           text += '\n' + rep.lines.atIndex(selStart[0]).text.substring(0, selEnd[1]);
         }
         text = data.tagOpen + text.split("\n").join(data.tagClose + "\n" + data.tagOpen) + data.tagClose;
-        self.editorInfo.ace_replaceRange(selStart, selEnd, text);
+        self.ace.replaceRange({start: selStart, end: selEnd}, text);
 
         break;
       case 'insertTags':
         // data has tagOpen, tagClose, sampleText, trimSpace
         // put tagOpen before and tagClose after selection. if selection is empty, use sampleText in between. trimSpaces trims spaces from the start+end
-        var rep = self.editorInfo.ace_getRep();
+        var rep = self.rep;
         var selStart = rep.selStart;
         var selEnd = rep.selEnd;
         var text = data.sampleText;
@@ -60,7 +60,7 @@ exports.iframeinsertReceiveMessage = function(event)
             var before = selEnd;
             if (before[1] <= 1) {
               before[0]--;
-              before[1] = rep.linex.atIndex(before[0]).text.length;
+              before[1] = rep.lines.atIndex(before[0]).text.length;
             } else {
               before[1]--;
             }
@@ -84,13 +84,13 @@ exports.iframeinsertReceiveMessage = function(event)
           text += '\n' + rep.lines.atIndex(selStart[0]).text.substring(0, selEnd[1]);
         }
         text = data.tagOpen + text + data.tagClose;
-        self.editorInfo.ace_replaceRange(selStart, selEnd, text);
+        self.ace.replaceRange({start: selStart, end: selEnd}, text);
 
         break;
       case 'insert':
         // replace selection with text (selection can be empty)
         var text = data.text;
-        self.editorInfo.ace_replaceRange(undefined, undefined, text);
+        self.ace.replaceRange(undefined, text);
         break;
       default:
         alert('ep_iframeinsert unterstützt Befehl "' + func + '" nicht.');
@@ -103,7 +103,7 @@ exports.iframeNotifyParent = function() {
   var data = new Object();
   data.func = 'none';
   data.context = 'ep_iframeinsert';
-  data.text = self.editorInfo.ace_exportText();
+  data.text = self.ace.exportText();
   parent.postMessage(data, "*");
 }
 
@@ -114,14 +114,18 @@ exports.aceInitialized = function(hook, context){
   self.setInterval(exports.iframeNotifyParent, 100);
 }
 
+exports.postAceInit = function(hook, context){
+  self.ace = context.ace;
+  self.rep = context.rep;
+}
+
+exports.postToolbarInit = function(hook, context){
+  var buttonsTohide = ['orderedlist', 'unorderedlist', 'indent', 'outdent', 'bold', 'italic', 'underline', 'strikethrough'];
+  buttonsTohide.forEach(function(btn){
+    $('[data-key="' + btn + '"]').hide();
+  });
+}
+
 exports.disableLists = function() {
-  $('#oderedlist').hide();
-  $('#unoderedlist').hide();
-  $('#indent').hide();
-  $('#outdent').hide();
-  $('#bold').hide();
-  $('#italic').hide();
-  $('#underline').hide();
-  $('#strikethrough').hide();
   return;
 }

@@ -5,6 +5,8 @@
       "hooks": {},
       "client_hooks": {
         "aceInitialized": "ep_iframeinsert/static/js/pad:aceInitialized",
+        "postAceInit": "ep_iframeinsert/static/js/pad:postAceInit",
+        "postToolbarInit": "ep_iframeinsert/static/js/pad:postToolbarInit",
         "documentReady": "ep_iframeinsert/static/js/pad:disableLists"
       }
     }
