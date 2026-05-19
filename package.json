@@ -1,17 +1,27 @@
 {
   "name": "ep_iframeinsert",
+  "version": "0.0.2",
   "description": "A plugin to trigger inserts using parent windows javascript",
-  "version": "0.0.1",
+  "main": "index.js",
   "author": {
     "name": "mbraun",
     "email": "michael-dev@fami-braun.de",
     "url": "https://github.com/michael-dev/ep_iframeinsert"
   },
   "contributors": [],
+  "license": "GPL-2.0",
+  "keywords": [
+    "etherpad-plugin",
+    "iframe",
+    "insert"
+  ],
   "dependencies": {},
+  "devDependencies": {},
   "engines": {
-    "node": ">= 0.4.1"
+    "node": ">= 12.0.0"
   },
-  "_id": "ep_iframeinsert@0.0.1",
-  "_from": "ep_iframeinsert"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ref-it/ep_iframeinsert.git"
+  }
 }
